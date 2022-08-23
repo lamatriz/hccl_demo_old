@@ -17,5 +17,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }} 
           password: ${{ secrets.DOCEKRHUB_TOKEN }}
+          ecr: false
       - name: build a docker image
         run: docker build --no-cache --build-arg base_image=${base_image} -t ${prefix_image_name}/hccl_demo:${GITHUB_SHA} .
