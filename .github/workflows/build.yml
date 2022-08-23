@@ -8,10 +8,9 @@ env:
   
 jobs:
   build:
-    runs-on: [cicd]
+    runs-on: [k8s-linux]
 
     steps:
       - uses: actions/checkout@v3
       - name: build a docker image
-        working-directory: /home/net/actions-runner/_work/hccl_demo/hccl_demo
         run: docker build --no-cache --build-arg base_image=${base_image} -t ${prefix_image_name}/hccl_demo:${GITHUB_SHA} .
