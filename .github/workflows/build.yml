@@ -1,0 +1,17 @@
+name: build and push to Docker Hub
+
+on: [push]
+
+env:
+  base_image: lamatriz/pytorch:1.12.0-1.6.0-439-deepspeed
+  prefix_image_name: lamatriz
+  
+jobs:
+  build:
+    runs-on: [cicd]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: build a docker image
+        working-directory: /home/net/actions-runner/_work/hccl_demo/hccl_demo
+        run: docker build --no-cache --build-arg base_image=${base_image} -t ${prefix_image_name}/hccl_demo:${GITHUB_SHA} .
