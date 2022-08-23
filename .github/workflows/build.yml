@@ -1,0 +1,31 @@
+name: build and push to Docker Hub
+
+on: [push]
+
+env:
+  base_image: lamatriz/pytorch:1.12.0-1.6.0-439-deepspeed
+  prefix_image_name: lamatriz
+  
+jobs:
+  build:
+    runs-on: [k8s-linux]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v1.1.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.projectKey=hccl_demo
+      - name: Docker Login
+        uses: docker/login-action@v2.0.0
+        with:
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+      - name: build a docker image
+        run: docker build --no-cache --build-arg base_image=${base_image} -t ${prefix_image_name}/hccl_demo:${GITHUB_SHA} .
+      - name: Push the image to Docker Hub
+        run: docker push ${prefix_image_name}/hccl_demo:${GITHUB_SHA}
