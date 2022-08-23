@@ -27,3 +27,5 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
       - name: build a docker image
         run: docker build --no-cache --build-arg base_image=${base_image} -t ${prefix_image_name}/hccl_demo:${GITHUB_SHA} .
+      - name: Push the image to Docker Hub
+        run: docker push ${prefix_image_name}/hccl_demo:${GITHUB_SHA}
